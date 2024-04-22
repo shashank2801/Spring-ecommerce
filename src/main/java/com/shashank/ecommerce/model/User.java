@@ -8,6 +8,8 @@ import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
+import jakarta.validation.constraints.Past;
+import jakarta.validation.constraints.Size;
 
 @Entity
 public class User {
@@ -15,8 +17,10 @@ public class User {
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
 	private Integer Id;
 	
+	@Size(min = 2,message = "Name should contain atleast 2 characters")
 	private String name;
 	
+	@Past(message = "Birthday should be in past.")
 	private LocalDate birthDate;
 
 	public Integer getId() {

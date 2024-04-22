@@ -16,11 +16,22 @@ import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
 import com.shashank.ecommerce.model.User;
 import com.shashank.ecommerce.service.UserService;
 
+import jakarta.validation.Valid;
+
 @RestController
 public class UserController {
 	@Autowired
 	private UserService userService;
 	
+	//create
+	@PostMapping("/users")
+	public ResponseEntity<User> createUser(@Valid @RequestBody User user) {
+		User savedUser = userService.saveUser(user);
+		URI location = ServletUriComponentsBuilder.fromCurrentRequest().path("/{id}").buildAndExpand(savedUser.getId()).toUri();
+		return ResponseEntity.created(location).build();
+	}
+	
+	//read
 	@GetMapping("/users")
 	public List<User> getUsers() {
 		return userService.getAllUsers();
@@ -31,18 +42,13 @@ public class UserController {
 		return userService.getUserById(id);
 	}
 	
-	@PostMapping("/users")
-	public ResponseEntity<User> createUser(@RequestBody User user) {
-		User savedUser = userService.saveUser(user);
-		URI location = ServletUriComponentsBuilder.fromCurrentRequest().path("/{id}").buildAndExpand(savedUser.getId()).toUri();
-		return ResponseEntity.created(location).build();
-	}
-	
+	//update
 	@PostMapping("/update/{id}")
 	public User updateUser(@RequestBody User user,@PathVariable int id) {
 		return userService.updateUser(user, id);
 	}
 	
+	//delete
 	@DeleteMapping("/delete/{id}")
 	public void deleteUser(@PathVariable int id) {
 		userService.deleteUser(id);
